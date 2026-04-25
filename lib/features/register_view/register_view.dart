@@ -64,121 +64,136 @@ class _RegisterViewState extends State<RegisterView> {
           return SafeArea(
             child: Scaffold(
               backgroundColor: primary,
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // ===== Header =====
-                    SizedBox(
-                      height: context.height(25),
-                      child: const AuthHeader(title: "My ToDo"),
-                    ),
-
-                    // ===== Register Form =====
-                    Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        ),
+              body: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
                       ),
-                      padding: const EdgeInsets.all(24),
-                      child: Form(
-                        key: _formKey,
+                      child: IntrinsicHeight(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              "Create Account",
-                              style: TextStyle(
-                                fontSize: context.width(8),
-                                fontWeight: FontWeight.bold,
+                            // ===== Header =====
+                            Container(
+                              constraints: BoxConstraints(
+                                minHeight: context.height(25),
                               ),
+                              child: const AuthHeader(title: "My ToDo"),
                             ),
-                            SizedBox(height: context.height(1)),
-                            Text(
-                              "Register to start managing tasks",
-                              style: TextStyle(color: Colors.grey, fontSize: context.width(4)),
-                            ),
-                            SizedBox(height: context.height(3)),
 
-                            CustomTextField(
-                              controller: _fullNameController,
-                              labelText: 'Full Name',
-                              prefixIcon: Icons.person,
-                              validator: (value) => value!.isEmpty ? 'Enter your name' : null,
-                            ),
-                            const SizedBox(height: 16),
-
-                            CustomTextField(
-                              controller: _emailController,
-                              labelText: 'Email',
-                              prefixIcon: Icons.email,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) => value!.isEmpty ? 'Enter your email' : null,
-                            ),
-                            const SizedBox(height: 16),
-
-                            CustomTextField(
-                              controller: _passwordController,
-                              labelText: 'Password',
-                              prefixIcon: Icons.lock,
-                              obscureText: _isObscure,
-                              suffixIcon: IconButton(
-                                icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
-                                onPressed: () => setState(() => _isObscure = !_isObscure),
-                              ),
-                              validator: (value) => value!.length < 6 ? 'Min 6 chars' : null,
-                            ),
-                            const SizedBox(height: 16),
-
-                            CustomTextField(
-                              controller: _confirmPasswordController,
-                              labelText: 'Confirm Password',
-                              prefixIcon: Icons.lock_outline,
-                              obscureText: _isConfirmObscure,
-                              suffixIcon: IconButton(
-                                icon: Icon(_isConfirmObscure ? Icons.visibility_off : Icons.visibility),
-                                onPressed: () => setState(() => _isConfirmObscure = !_isConfirmObscure),
-                              ),
-                              validator: (value) {
-                                if (value != _passwordController.text) return 'Passwords do not match';
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 32),
-
-                            PrimaryButton(
-                              text: 'Register',
-                              isLoading: state is RegisterLoading,
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  context.read<RegisterCubit>().registerUser(
-                                        fullName: _fullNameController.text,
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
-                                      );
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("Already have an account? ", style: TextStyle(color: Colors.grey)),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Login', style: TextStyle(color: primary, fontWeight: FontWeight.bold)),
+                            // ===== Register Form =====
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    topRight: Radius.circular(30),
+                                  ),
                                 ),
-                              ],
+                                padding: const EdgeInsets.all(24),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Create Account",
+                                        style: TextStyle(
+                                          fontSize: context.width(8),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: context.height(1)),
+                                      Text(
+                                        "Register to start managing tasks",
+                                        style: TextStyle(color: Colors.grey, fontSize: context.width(4)),
+                                      ),
+                                      SizedBox(height: context.height(3)),
+
+                                      CustomTextField(
+                                        controller: _fullNameController,
+                                        labelText: 'Full Name',
+                                        prefixIcon: Icons.person,
+                                        validator: (value) => value!.isEmpty ? 'Enter your name' : null,
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      CustomTextField(
+                                        controller: _emailController,
+                                        labelText: 'Email',
+                                        prefixIcon: Icons.email,
+                                        keyboardType: TextInputType.emailAddress,
+                                        validator: (value) => value!.isEmpty ? 'Enter your email' : null,
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      CustomTextField(
+                                        controller: _passwordController,
+                                        labelText: 'Password',
+                                        prefixIcon: Icons.lock,
+                                        obscureText: _isObscure,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
+                                          onPressed: () => setState(() => _isObscure = !_isObscure),
+                                        ),
+                                        validator: (value) => value!.length < 6 ? 'Min 6 chars' : null,
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      CustomTextField(
+                                        controller: _confirmPasswordController,
+                                        labelText: 'Confirm Password',
+                                        prefixIcon: Icons.lock_outline,
+                                        obscureText: _isConfirmObscure,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(_isConfirmObscure ? Icons.visibility_off : Icons.visibility),
+                                          onPressed: () => setState(() => _isConfirmObscure = !_isConfirmObscure),
+                                        ),
+                                        validator: (value) {
+                                          if (value != _passwordController.text) return 'Passwords do not match';
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 32),
+
+                                      PrimaryButton(
+                                        text: 'Register',
+                                        isLoading: state is RegisterLoading,
+                                        onPressed: () {
+                                          if (_formKey.currentState!.validate()) {
+                                            context.read<RegisterCubit>().registerUser(
+                                                  fullName: _fullNameController.text,
+                                                  email: _emailController.text,
+                                                  password: _passwordController.text,
+                                                );
+                                          }
+                                        },
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text("Already have an account? ", style: TextStyle(color: Colors.grey)),
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text('Login', style: TextStyle(color: primary, fontWeight: FontWeight.bold)),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           );

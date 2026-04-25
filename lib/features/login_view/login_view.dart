@@ -65,167 +65,176 @@ class _LoginViewState extends State<LoginView> {
         builder: (context, state) {
           return SafeArea(
             child: Scaffold(
-              body: Stack(
-                children: [
-                  // ===== الخلفية =====
-                  Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: primary,
-                  ),
-
-                  // ===== اسم التطبيق =====
-                  const AuthHeader(title: "TaskFlow"),
-
-                  // ===== الكونتينر بتاع اللوجن =====
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: double.infinity,
-                      height: context.height(65),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        ),
+              backgroundColor: primary,
+              body: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
                       ),
-                      padding: const EdgeInsets.all(24),
-                      child: Form(
-                        key: _formKey,
+                      child: IntrinsicHeight(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              "Welcome Back!",
-                              style: TextStyle(
-                                fontSize: context.width(8),
-                                fontWeight: FontWeight.bold,
+                            // ===== Header =====
+                            Container(
+                              constraints: BoxConstraints(
+                                minHeight: context.height(35), // Increased to give more space for header
                               ),
-                            ),
-                            SizedBox(height: context.height(1)),
-                            Text(
-                              "Login to continue",
-                              style: TextStyle(color: Colors.grey, fontSize: context.width(4)),
-                            ),
-                            SizedBox(height: context.height(3)),
-
-                            // ===== Email =====
-                            CustomTextField(
-                              controller: _emailController,
-                              labelText: 'Email',
-                              prefixIcon: Icons.email,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'من فضلك ادخل الإيميل';
-                                }
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                                  return 'ادخل إيميل صحيح';
-                                }
-                                return null;
-                              },
+                              child: const AuthHeader(title: "TaskFlow"),
                             ),
 
-                            const SizedBox(height: 16),
-
-                            // ===== Password =====
-                            CustomTextField(
-                              controller: _passwordController,
-                              labelText: 'Password',
-                              prefixIcon: Icons.lock,
-                              obscureText: _isObscure,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isObscure ? Icons.visibility_off : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                },
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'من فضلك ادخل الباسورد';
-                                }
-                                if (value.length < 6) {
-                                  return 'الباسورد لازم يكون 6 حروف على الأقل';
-                                }
-                                return null;
-                              },
-                            ),
-
-                            // ===== Forgot Password =====
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  // هنا روح لصفحة Forgot Password
-                                },
-                                child: const Text(
-                                  'Forgot Password?',
-                                  style: TextStyle(color: primary),
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 8),
-
-                            // ===== زرار اللوجن =====
-                            PrimaryButton(
-                              text: 'Login',
-                              isLoading: state is LoginLoading,
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  context.read<LoginCubit>().loginUser(
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
-                                      );
-                                }
-                              },
-                            ),
-
-                            // ===== Register =====
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Don't have an account?",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17.0,
+                            // ===== Login Container =====
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    topRight: Radius.circular(30),
                                   ),
                                 ),
-                                TextButton(
-                                  onPressed: () {
-                                    // هنا روح لصفحة Register
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            const RegisterView(),
+                                padding: const EdgeInsets.all(24),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Welcome Back!",
+                                        style: TextStyle(
+                                          fontSize: context.width(8),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Register',
-                                    style: TextStyle(
-                                      color: primary,
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                      SizedBox(height: context.height(1)),
+                                      Text(
+                                        "Login to continue",
+                                        style: TextStyle(color: Colors.grey, fontSize: context.width(4)),
+                                      ),
+                                      SizedBox(height: context.height(3)),
+
+                                      // ===== Email =====
+                                      CustomTextField(
+                                        controller: _emailController,
+                                        labelText: 'Email',
+                                        prefixIcon: Icons.email,
+                                        keyboardType: TextInputType.emailAddress,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'من فضلك ادخل الإيميل';
+                                          }
+                                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                            return 'ادخل إيميل صحيح';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+
+                                      const SizedBox(height: 16),
+
+                                      // ===== Password =====
+                                      CustomTextField(
+                                        controller: _passwordController,
+                                        labelText: 'Password',
+                                        prefixIcon: Icons.lock,
+                                        obscureText: _isObscure,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            _isObscure ? Icons.visibility_off : Icons.visibility,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _isObscure = !_isObscure;
+                                            });
+                                          },
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'من فضلك ادخل الباسورد';
+                                          }
+                                          if (value.length < 6) {
+                                            return 'الباسورد لازم يكون 6 حروف على الأقل';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+
+                                      // ===== Forgot Password =====
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            // هنا روح لصفحة Forgot Password
+                                          },
+                                          child: const Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(color: primary),
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 8),
+
+                                      // ===== Login Button =====
+                                      PrimaryButton(
+                                        text: 'Login',
+                                        isLoading: state is LoginLoading,
+                                        onPressed: () {
+                                          if (_formKey.currentState!.validate()) {
+                                            context.read<LoginCubit>().loginUser(
+                                                  email: _emailController.text,
+                                                  password: _passwordController.text,
+                                                );
+                                          }
+                                        },
+                                      ),
+
+                                      // ===== Register Link =====
+                                      const Spacer(),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Don't have an account?",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 17.0,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // هنا روح لصفحة Register
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (BuildContext context) => const RegisterView(),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text(
+                                              'Register',
+                                              style: TextStyle(
+                                                color: primary,
+                                                fontSize: 17.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           );
